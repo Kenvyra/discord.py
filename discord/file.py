@@ -24,8 +24,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import os.path
 import io
+import os.path
+
 
 class File:
     """A parameter object used for :meth:`abc.Messageable.send`
@@ -34,7 +35,7 @@ class File:
     .. note::
 
         File objects are single use and are not meant to be reused in
-        multiple :meth:`abc.Messageable.send`\s.
+        multiple :meth:`abc.Messageable.send`s.
 
     Attributes
     -----------
@@ -58,19 +59,21 @@ class File:
         Whether the attachment is a spoiler.
     """
 
-    __slots__ = ('fp', 'filename', '_original_pos', '_owner', '_closer')
+    __slots__ = ("fp", "filename", "_original_pos", "_owner", "_closer")
 
     def __init__(self, fp, filename=None, *, spoiler=False):
         self.fp = fp
 
         if isinstance(fp, io.IOBase):
             if not (fp.seekable() and fp.readable()):
-                raise ValueError('File buffer {!r} must be seekable and readable'.format(fp))
+                raise ValueError(
+                    "File buffer {!r} must be seekable and readable".format(fp)
+                )
             self.fp = fp
             self._original_pos = fp.tell()
             self._owner = False
         else:
-            self.fp = open(fp, 'rb')
+            self.fp = open(fp, "rb")
             self._original_pos = 0
             self._owner = True
 
@@ -85,12 +88,16 @@ class File:
             if isinstance(fp, str):
                 _, self.filename = os.path.split(fp)
             else:
-                self.filename = getattr(fp, 'name', None)
+                self.filename = getattr(fp, "name", None)
         else:
             self.filename = filename
 
-        if spoiler and self.filename is not None and not self.filename.startswith('SPOILER_'):
-            self.filename = 'SPOILER_' + self.filename
+        if (
+            spoiler
+            and self.filename is not None
+            and not self.filename.startswith("SPOILER_")
+        ):
+            self.filename = "SPOILER_" + self.filename
 
     def reset(self, *, seek=True):
         # The `seek` parameter is needed because

@@ -24,9 +24,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+
 class _FakeBool:
     def __repr__(self):
-        return 'True'
+        return "True"
 
     def __eq__(self, other):
         return other is True
@@ -34,7 +35,9 @@ class _FakeBool:
     def __bool__(self):
         return True
 
+
 default = _FakeBool()
+
 
 class AllowedMentions:
     """A class that represents what mentions are allowed in a message.
@@ -61,7 +64,7 @@ class AllowedMentions:
         roles are in the message content.
     """
 
-    __slots__ = ('everyone', 'users', 'roles')
+    __slots__ = ("everyone", "users", "roles")
 
     def __init__(self, *, everyone=default, users=default, roles=default):
         self.everyone = everyone
@@ -89,19 +92,19 @@ class AllowedMentions:
         data = {}
 
         if self.everyone:
-            parse.append('everyone')
+            parse.append("everyone")
 
-        if self.users == True:
-            parse.append('users')
-        elif self.users != False:
-            data['users'] = [x.id for x in self.users]
+        if self.users is True:
+            parse.append("users")
+        elif self.users is not False:
+            data["users"] = [x.id for x in self.users]
 
-        if self.roles == True:
-            parse.append('roles')
-        elif self.roles != False:
-            data['roles'] = [x.id for x in self.roles]
+        if self.roles is True:
+            parse.append("roles")
+        elif self.roles is not False:
+            data["roles"] = [x.id for x in self.roles]
 
-        data['parse'] = parse
+        data["parse"] = parse
         return data
 
     def merge(self, other):
@@ -114,4 +117,6 @@ class AllowedMentions:
         return AllowedMentions(everyone=everyone, roles=roles, users=users)
 
     def __repr__(self):
-        return '{0.__class__.__qualname__}(everyone={0.everyone}, users={0.users}, roles={0.roles})'.format(self)
+        return "{0.__class__.__qualname__}(everyone={0.everyone}, users={0.users}, roles={0.roles})".format(
+            self
+        )
