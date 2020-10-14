@@ -197,25 +197,6 @@ class KeepAliveHandler(threading.Thread):
             log.warning(self.behind_msg, self.shard_id, self.latency)
 
 
-class VoiceKeepAliveHandler(KeepAliveHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.recent_ack_latencies = deque(maxlen=20)
-        self.msg = "Keeping shard ID %s voice websocket alive with timestamp %s."
-        self.block_msg = "Shard ID %s voice heartbeat blocked for more than %s seconds"
-        self.behind_msg = "High socket latency, shard ID %s heartbeat is %.1fs behind"
-
-    def get_payload(self):
-        return {"op": self.ws.HEARTBEAT, "d": int(time.time() * 1000)}
-
-    def ack(self):
-        ack_time = time.perf_counter()
-        self._last_ack = ack_time
-        self._last_recv = ack_time
-        self.latency = ack_time - self._last_send
-        self.recent_ack_latencies.append(self.latency)
-
-
 class DiscordClientWebSocketResponse(aiohttp.ClientWebSocketResponse):
     async def close(self, *, code: int = 4000, message: bytes = b"") -> bool:
         return await super().close(code=code, message=message)
