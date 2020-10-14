@@ -1286,11 +1286,11 @@ class Guild(Hashable):
             else:
                 fields["rules_channel_id"] = rules_channel.id
 
-        if "public_updates_channel" in fields:
-            if rules_channel is None:
-                fields["public_updates_channel_id"] = rules_channel
-            else:
-                fields["public_updates_channel_id"] = rules_channel.id
+            if "public_updates_channel" in fields:
+                if rules_channel is None:
+                    fields["public_updates_channel_id"] = rules_channel
+                else:
+                    fields["public_updates_channel_id"] = rules_channel.id
         await http.edit_guild(self.id, reason=reason, **fields)
 
     async def fetch_channels(self):

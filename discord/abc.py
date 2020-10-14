@@ -444,6 +444,8 @@ class GuildChannel:
                 target = self.guild.get_role(ow.id)
             elif ow.type == "member":
                 target = self.guild.get_member(ow.id)
+            else:
+                target = None
 
             # TODO: There is potential data loss here in the non-chunked
             # case, i.e. target is None because get_member returned nothing.
